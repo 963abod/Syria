@@ -1,0 +1,283 @@
+/* ==========================================================================
+   Design tokens
+   ========================================================================== */
+:root{
+  --black:            #000000;
+  --emerald:           #14ffb0;   /* primary neon stroke */
+  --emerald-soft:      #0affb0;
+  --emerald-dim:       rgba(20, 255, 176, 0.12);
+  --emerald-deep:      #062a20;   /* ambient background glow */
+  --ink-high:          #eafff5;   /* near-white, cool green tint */
+  --ink-mid:           rgba(202, 255, 235, 0.55);
+  --ink-low:           rgba(202, 255, 235, 0.28);
+
+  --ease-cinema: cubic-bezier(0.16, 0.8, 0.24, 1);
+  --dur-map-in:   3.2s;
+  --dur-glow-in:  2.6s;
+  --dur-caption:  1.6s;
+}
+
+*{ box-sizing: border-box; }
+
+html, body{
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--black);
+  overflow: hidden;
+}
+
+body{
+  font-family: 'Tajawal', system-ui, sans-serif;
+  color: var(--ink-high);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   Ambient atmosphere — the signature depth glow + technical grid + vignette
+   ========================================================================== */
+.ambient-glow{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 46%, var(--emerald-deep) 0%, transparent 62%);
+  opacity: 0;
+  animation: ambientIn 4s var(--ease-cinema) 0.4s forwards;
+  pointer-events: none;
+}
+
+@keyframes ambientIn{
+  to{ opacity: 0.55; }
+}
+
+.grid-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background-image:
+    linear-gradient(rgba(20,255,176,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20,255,176,0.035) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, black 0%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, black 0%, transparent 75%);
+  opacity: 0;
+  animation: gridIn 3s ease-out 1.2s forwards;
+  pointer-events: none;
+}
+
+@keyframes gridIn{
+  to{ opacity: 1; }
+}
+
+.vignette{
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 55%, rgba(0,0,0,0.75) 100%);
+}
+
+.scanline{
+  position: fixed;
+  left: 0; right: 0; top: 0;
+  height: 1px;
+  z-index: 6;
+  background: linear-gradient(90deg, transparent, rgba(20,255,176,0.35), transparent);
+  opacity: 0;
+  animation: scan 8s linear 3s infinite;
+  pointer-events: none;
+}
+
+@keyframes scan{
+  0%   { top: 0%;   opacity: 0; }
+  5%   { opacity: 0.5; }
+  50%  { opacity: 0.15; }
+  95%  { opacity: 0.5; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* ==========================================================================
+   Stage / layout
+   ========================================================================== */
+.stage{
+  position: relative;
+  z-index: 2;
+  height: 100dvh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.25rem, 3vh, 2.5rem);
+  padding: 6vh 6vw;
+}
+
+.map-tilt{
+  --tiltX: 0deg;
+  --tiltY: 0deg;
+  perspective: 1200px;
+  transform: rotateX(var(--tiltX)) rotateY(var(--tiltY));
+  transition: transform 0.1s linear;
+}
+
+.map-wrap{
+  width: min(58vw, 62vh, 620px);
+  max-width: 92vw;
+  opacity: 0;
+  transform: translateY(14px) scale(0.98);
+  animation:
+    mapFadeIn var(--dur-map-in) var(--ease-cinema) 0.3s forwards,
+    float 9s ease-in-out calc(var(--dur-map-in) + 0.3s) infinite;
+}
+
+@keyframes mapFadeIn{
+  0%   { opacity: 0;    transform: translateY(18px) scale(0.965); }
+  100% { opacity: 1;    transform: translateY(0)     scale(1); }
+}
+
+@keyframes float{
+  0%, 100% { transform: translateY(0px)   rotate(0deg); }
+  50%      { transform: translateY(-10px) rotate(0.35deg); }
+}
+
+.syria-svg{
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.syria-fill{
+  opacity: 0;
+  animation: fillIn 3s ease-out 1.6s forwards;
+}
+
+@keyframes fillIn{
+  to{ opacity: 1; }
+}
+
+.syria-outline{
+  stroke: var(--emerald);
+  stroke-width: 2.4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 4400;
+  stroke-dashoffset: 4400;
+  opacity: 0;
+  animation:
+    drawOn var(--dur-glow-in) var(--ease-cinema) 0.15s forwards,
+    breathe 5.5s ease-in-out calc(var(--dur-glow-in) + 0.15s) infinite;
+}
+
+@keyframes drawOn{
+  0%   { opacity: 0.15; stroke-dashoffset: 4400; }
+  60%  { opacity: 1; }
+  100% { opacity: 1; stroke-dashoffset: 0; }
+}
+
+@keyframes breathe{
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(20,255,176,0.55)) drop-shadow(0 0 18px rgba(20,255,176,0.28));
+  }
+  50% {
+    filter: drop-shadow(0 0 11px rgba(20,255,176,0.85)) drop-shadow(0 0 30px rgba(20,255,176,0.4));
+  }
+}
+
+/* ==========================================================================
+   Caption
+   ========================================================================== */
+.caption{
+  text-align: center;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: captionIn var(--dur-caption) var(--ease-cinema) 3.3s forwards;
+}
+
+@keyframes captionIn{
+  to{ opacity: 1; transform: translateY(0); }
+}
+
+.caption-title{
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  font-size: clamp(1.05rem, 2.6vw, 1.7rem);
+  letter-spacing: 0.01em;
+  color: var(--ink-high);
+  text-shadow: 0 0 22px rgba(20,255,176,0.22);
+}
+
+.caption-sub{
+  margin: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 400;
+  font-size: clamp(0.62rem, 1.1vw, 0.78rem);
+  letter-spacing: 0.42em;
+  color: var(--ink-mid);
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   HUD coordinate readout
+   ========================================================================== */
+.hud{
+  position: fixed;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-low);
+  opacity: 0;
+  animation: hudIn 1.8s ease-out 3.6s forwards;
+}
+
+.hud--top-left{ top: 5vh; inset-inline-start: 5vw; align-items: flex-start; }
+.hud--top-right{ top: 5vh; inset-inline-end: 5vw; align-items: flex-end; }
+
+@keyframes hudIn{
+  to{ opacity: 1; }
+}
+
+.hud-line::before{
+  content: "";
+  display: inline-block;
+  width: 5px; height: 5px;
+  margin-inline-end: 0.5em;
+  border-radius: 50%;
+  background: var(--emerald);
+  box-shadow: 0 0 6px var(--emerald);
+  vertical-align: middle;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 640px){
+  .stage{ gap: 1.25rem; padding: 8vh 8vw; }
+  .map-wrap{ width: min(78vw, 50vh); }
+  .hud{ display: none; }
+  .caption-sub{ letter-spacing: 0.3em; }
+}
+
+@media (min-width: 1400px){
+  .map-wrap{ width: min(40vw, 60vh, 680px); }
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce){
+  .map-wrap, .syria-outline, .syria-fill, .caption, .hud,
+  .ambient-glow, .grid-overlay, .scanline{
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .map-wrap{ animation-name: mapFadeIn; }
+  .syria-outline{ stroke-dashoffset: 0; opacity: 1; animation: none; filter: drop-shadow(0 0 10px rgba(20,255,176,0.6)); }
+  .scanline{ display: none; }
+}

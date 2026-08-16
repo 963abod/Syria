@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>سوريا | خريطة تفاعلية</title>
+<meta name="description" content="خريطة سوريا التفاعلية — تجربة بصرية سينمائية">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ambient depth glow behind the map -->
+  <div class="ambient-glow" aria-hidden="true"></div>
+
+  <!-- faint technical grid + vignette, the page's signature texture -->
+  <div class="grid-overlay" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- HUD-style coordinate readout, appears after the map -->
+  <div class="hud hud--top-left" aria-hidden="true">
+    <span class="hud-line">35.2137° N</span>
+    <span class="hud-line">38.9968° E</span>
+  </div>
+  <div class="hud hud--top-right" aria-hidden="true">
+    <span class="hud-line">SYR</span>
+    <span class="hud-line">ARAB REPUBLIC</span>
+  </div>
+
+  <main class="stage">
+    <div class="map-tilt">
+    <div class="map-wrap">
+      <svg
+        class="syria-svg"
+        viewBox="0 0 1000 881.6"
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label="خريطة الجمهورية العربية السورية"
+      >
+        <defs>
+          <filter id="glow-soft" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur1"/>
+            <feGaussianBlur in="SourceGraphic" stdDeviation="16" result="blur2"/>
+            <feMerge>
+              <feMergeNode in="blur2"/>
+              <feMergeNode in="blur1"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+
+          <radialGradient id="fillGhost" cx="50%" cy="45%" r="70%">
+            <stop offset="0%" stop-color="#0affb0" stop-opacity="0.05"/>
+            <stop offset="100%" stop-color="#0affb0" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <g class="syria-group">
+          <!-- ghost interior fill, near-invisible, gives the shape a hint of volume -->
+          <path
+            class="syria-fill"
+            d="M 42.15,191.19 L 27.62,212.43 L 39.24,238.99 L 29.07,274.39 L 39.24,309.80 L 33.43,345.20 L 45.06,380.61 L 50.87,433.72 L 49.42,470.89 L 72.67,486.83 L 90.12,504.53 L 143.90,522.23 L 119.19,557.64 L 97.38,593.04 L 79.94,628.45 L 61.05,663.86 L 46.51,681.56 L 39.24,699.26 L 31.98,704.57 L 21.80,734.67 L 27.62,770.07 L 23.26,805.48 L 31.98,826.72 L 39.24,840.88 L 82.85,844.42 L 184.59,849.73 L 286.34,855.05 L 373.55,849.73 L 459.30,849.73 L 489.83,853.28 L 540.70,814.33 L 606.10,734.67 L 678.78,628.45 L 736.92,548.79 L 774.71,509.84 L 802.33,451.42 L 831.40,345.20 L 875.00,256.69 L 925.87,159.33 L 976.74,70.81 L 978.20,26.55 L 904.07,44.26 L 831.40,115.07 L 736.92,102.68 L 643.90,79.66 L 562.50,109.76 L 482.56,106.22 L 395.35,70.81 L 322.67,109.76 L 250.00,109.76 L 184.59,127.46 L 148.26,189.42 L 111.92,207.12 L 75.58,221.29 Z"
+            fill="url(#fillGhost)"
+          />
+
+          <!-- the border itself: transparent inside, glowing green outline only -->
+          <path
+            class="syria-outline"
+            d="M 42.15,191.19 L 27.62,212.43 L 39.24,238.99 L 29.07,274.39 L 39.24,309.80 L 33.43,345.20 L 45.06,380.61 L 50.87,433.72 L 49.42,470.89 L 72.67,486.83 L 90.12,504.53 L 143.90,522.23 L 119.19,557.64 L 97.38,593.04 L 79.94,628.45 L 61.05,663.86 L 46.51,681.56 L 39.24,699.26 L 31.98,704.57 L 21.80,734.67 L 27.62,770.07 L 23.26,805.48 L 31.98,826.72 L 39.24,840.88 L 82.85,844.42 L 184.59,849.73 L 286.34,855.05 L 373.55,849.73 L 459.30,849.73 L 489.83,853.28 L 540.70,814.33 L 606.10,734.67 L 678.78,628.45 L 736.92,548.79 L 774.71,509.84 L 802.33,451.42 L 831.40,345.20 L 875.00,256.69 L 925.87,159.33 L 976.74,70.81 L 978.20,26.55 L 904.07,44.26 L 831.40,115.07 L 736.92,102.68 L 643.90,79.66 L 562.50,109.76 L 482.56,106.22 L 395.35,70.81 L 322.67,109.76 L 250.00,109.76 L 184.59,127.46 L 148.26,189.42 L 111.92,207.12 L 75.58,221.29 Z"
+            fill="none"
+            filter="url(#glow-soft)"
+          />
+        </g>
+      </svg>
+    </div>
+    </div>
+
+    <div class="caption">
+      <h1 class="caption-title">
+        <span class="ar">الجمهورية العربية السورية</span>
+      </h1>
+      <p class="caption-sub">SYRIAN ARAB REPUBLIC</p>
+    </div>
+  </main>
+
+  <footer class="scanline" aria-hidden="true"></footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
