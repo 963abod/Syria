@@ -1,50 +1,27 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" class="dark scroll-smooth">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROLEX — Crown & Excellence</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Three.js 3D Engine -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Cinzel:wght@400;600;700;900&display=swap" rel="stylesheet">
-
     <style>
+        /* Base Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
         body {
-            font-family: 'Cairo', sans-serif;
             background-color: #05070a;
             color: #f3f4f6;
             overflow-x: hidden;
         }
-        .font-cinzel {
-            font-family: 'Cinzel', serif;
-        }
-        /* iOS Glassmorphism Style */
-        .ios-glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(25px) saturate(190%);
-            -webkit-backdrop-filter: blur(25px) saturate(190%);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-        }
-        .ios-btn {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .ios-btn:hover {
-            background: rgba(212, 175, 55, 0.25);
-            border-color: rgba(212, 175, 55, 0.6);
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
-            transform: translateY(-2px);
-        }
-        /* Fade In Initial Loading Canvas */
+
+        /* 3D WebGL Canvas */
         #webgl-container {
             position: fixed;
             top: 0;
@@ -54,186 +31,352 @@
             z-index: 0;
             pointer-events: none;
             opacity: 0;
-            transition: opacity 2.5s ease-out;
+            transition: opacity 2s ease-in-out;
         }
+
         #webgl-container.loaded {
             opacity: 1;
         }
+
+        /* iOS Glassmorphism Style */
+        .ios-glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .ios-btn {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 9999px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .ios-btn:hover {
+            background: rgba(212, 175, 55, 0.25);
+            border-color: rgba(212, 175, 55, 0.6);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Layout Utilities */
+        .wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        nav {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1100px;
+            padding: 12px 24px;
+            border-radius: 9999px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 80px 20px 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            margin: 16px 0;
+            letter-spacing: 2px;
+            background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            max-width: 600px;
+            color: #a1a1aa;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            border-radius: 24px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: border-color 0.3s;
+        }
+
+        .card:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+
+        .card-icon {
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .card h3 {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .price {
+            color: #d4af37;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #9ca3af;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .about-section {
+            max-width: 900px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+
+        .about-card {
+            border-radius: 28px;
+            padding: 40px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 22px;
+            font-weight: 700;
+            color: #d4af37;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        footer {
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .signature {
+            color: #d4af37;
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            footer {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
     </style>
 </head>
-<body class="relative selection:bg-amber-500/30 selection:text-amber-200">
+<body>
 
-    <!-- 3D Background Canvas -->
+    <!-- 3D Canvas Container -->
     <div id="webgl-container"></div>
 
-    <!-- Main Overlay Wrapper -->
-    <div class="relative z-10">
-
-        <!-- Navigation Bar -->
-        <nav class="fixed top-4 left-1/2 -translate-x-1/2 w-[92%] max-w-6xl z-50 rounded-full ios-glass px-6 py-3.5 flex justify-between items-center transition-all duration-300">
-            <div class="flex items-center gap-3">
-                <i data-lucide="crown" class="w-7 h-7 text-amber-400 stroke-[1.5]"></i>
-                <span class="font-cinzel text-xl font-bold tracking-[0.2em] text-white">ROLEX</span>
+    <div class="wrapper">
+        <!-- Header / Navigation -->
+        <nav class="ios-glass">
+            <div class="logo">
+                <!-- Crown SVG -->
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2"><path d="m2 4 3 12h14l3-12-6 7-4-5-4 5-6-7z"/><circle cx="12" cy="4" r="1"/></svg>
+                ROLEX
             </div>
-            
-            <div class="flex items-center gap-4">
-                <!-- Language Toggle Button -->
-                <button onclick="toggleLanguage()" class="ios-btn px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider text-amber-200/90 flex items-center gap-2">
-                    <i data-lucide="globe" class="w-4 h-4"></i>
-                    <span id="lang-btn-text">English</span>
-                </button>
-            </div>
+            <button onclick="toggleLang()" class="ios-btn" style="padding: 6px 16px; font-size: 12px;">
+                <span id="lang-btn-text">English</span>
+            </button>
         </nav>
 
         <!-- Hero Section -->
-        <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20">
-            <div class="max-w-3xl space-y-6">
-                <span id="hero-subtitle" class="text-amber-400/90 text-sm md:text-base font-semibold tracking-[0.3em] uppercase block">
-                    الكمال في صناعة الساعات
-                </span>
-                <h1 id="hero-title" class="text-4xl md:text-7xl font-cinzel font-bold tracking-wide text-white leading-tight">
-                    OSTER PERPETUAL
-                </h1>
-                <p id="hero-desc" class="text-gray-300/80 text-base md:text-lg max-w-xl mx-auto font-light leading-relaxed">
-                    الدقة والأناقة في أبهى صورها. قم بالتمرير للأسفل لاستكشاف الساعة ثلاثية الأبعاد والتصاميم الحصرية.
-                </p>
-                <div class="pt-4">
-                    <a href="#watches" class="ios-btn inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold text-white tracking-widest uppercase">
-                        <span id="hero-cta">استكشف المجموعات</span>
-                        <i data-lucide="chevron-down" class="w-4 h-4 text-amber-400"></i>
-                    </a>
-                </div>
-            </div>
+        <section class="hero">
+            <span id="hero-subtitle" style="color: #d4af37; font-size: 13px; letter-spacing: 3px; text-transform: uppercase;">الكمال في صناعة الساعات</span>
+            <h1 id="hero-title">OYSTER PERPETUAL</h1>
+            <p id="hero-desc">الدقة والأناقة في أبهى صورها. اسحب للأعلى أو أسفل لاستكشاف الساعة ثلاثية الأبعاد والمجموعات الحصرية.</p>
+            <a href="#watches" class="ios-btn">
+                <span id="hero-cta">استكشف المجموعات</span>
+            </a>
         </section>
 
-        <!-- Watch Cards Section -->
-        <section id="watches" class="py-24 px-6 max-w-7xl mx-auto">
-            <div class="text-center mb-16 space-y-3">
-                <h2 id="collection-title" class="text-3xl md:text-5xl font-cinzel font-bold text-white">المجموعة المختارة</h2>
-                <div class="w-16 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto rounded-full"></div>
-            </div>
-
-            <!-- Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                
-                <!-- Watch Card 1 -->
-                <div class="ios-glass rounded-3xl p-6 flex flex-col justify-between group hover:border-amber-500/40 transition-all duration-500">
+        <!-- Rolex Watch Cards Section -->
+        <section id="watches" style="padding: 40px 0;">
+            <h2 id="collection-title" class="section-title">المجموعة المختارة</h2>
+            
+            <div class="cards-grid">
+                <!-- Card 1 -->
+                <div class="card ios-glass">
                     <div>
-                        <div class="h-48 flex items-center justify-center relative mb-4">
-                            <i data-lucide="watch" class="w-32 h-32 text-amber-400/20 group-hover:text-amber-400/40 group-hover:scale-110 transition-all duration-500"></i>
+                        <div class="card-icon">
+                            <!-- Watch Icon SVG -->
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="rgba(212,175,55,0.4)" stroke-width="1.5"><circle cx="12" cy="12" r="6"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4m-8-3 2 3-2 1"/></svg>
                         </div>
-                        <h3 class="font-cinzel text-xl font-bold text-white mb-1">Submariner Date</h3>
-                        <p class="text-amber-400 font-semibold text-lg mb-3">$14,500</p>
-                        <p id="card1-desc" class="text-gray-400 text-sm leading-relaxed mb-6">
-                            رمز الاستكشاف وأعماق البحار، مع مقاومة عالية للماء وإطار سيراميك فاخر.
-                        </p>
+                        <h3>Submariner Date</h3>
+                        <div class="price">$14,500</div>
+                        <p id="card1-desc">رمز الاستكشاف وأعماق البحار، مع مقاومة عالية للماء وإطار سيراميك فاخر.</p>
                     </div>
-                    <button class="ios-btn w-full py-3 rounded-2xl text-xs uppercase font-bold text-white tracking-widest flex items-center justify-center gap-2">
+                    <button class="ios-btn" style="width: 100%;">
                         <span class="card-btn-text">تواصل معنا</span>
-                        <i data-lucide="arrow-right" class="w-4 h-4 text-amber-400"></i>
                     </button>
                 </div>
 
-                <!-- Watch Card 2 -->
-                <div class="ios-glass rounded-3xl p-6 flex flex-col justify-between group hover:border-amber-500/40 transition-all duration-500">
+                <!-- Card 2 -->
+                <div class="card ios-glass">
                     <div>
-                        <div class="h-48 flex items-center justify-center relative mb-4">
-                            <i data-lucide="watch" class="w-32 h-32 text-amber-400/20 group-hover:text-amber-400/40 group-hover:scale-110 transition-all duration-500"></i>
+                        <div class="card-icon">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="rgba(212,175,55,0.4)" stroke-width="1.5"><circle cx="12" cy="12" r="6"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4m-8-3 2 3-2 1"/></svg>
                         </div>
-                        <h3 class="font-cinzel text-xl font-bold text-white mb-1">Cosmograph Daytona</h3>
-                        <p class="text-amber-400 font-semibold text-lg mb-3">$34,500</p>
-                        <p id="card2-desc" class="text-gray-400 text-sm leading-relaxed mb-6">
-                            مصممة لتلبية متطلبات سائقي سباقات السيارات المحترفين بتصميم سباق أسطوري.
-                        </p>
+                        <h3>Cosmograph Daytona</h3>
+                        <div class="price">$34,500</div>
+                        <p id="card2-desc">مصممة لتلبية متطلبات سائقي سباقات السيارات المحترفين بتصميم سباق أسطوري.</p>
                     </div>
-                    <button class="ios-btn w-full py-3 rounded-2xl text-xs uppercase font-bold text-white tracking-widest flex items-center justify-center gap-2">
+                    <button class="ios-btn" style="width: 100%;">
                         <span class="card-btn-text">تواصل معنا</span>
-                        <i data-lucide="arrow-right" class="w-4 h-4 text-amber-400"></i>
                     </button>
                 </div>
 
-                <!-- Watch Card 3 -->
-                <div class="ios-glass rounded-3xl p-6 flex flex-col justify-between group hover:border-amber-500/40 transition-all duration-500">
+                <!-- Card 3 -->
+                <div class="card ios-glass">
                     <div>
-                        <div class="h-48 flex items-center justify-center relative mb-4">
-                            <i data-lucide="watch" class="w-32 h-32 text-amber-400/20 group-hover:text-amber-400/40 group-hover:scale-110 transition-all duration-500"></i>
+                        <div class="card-icon">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="rgba(212,175,55,0.4)" stroke-width="1.5"><circle cx="12" cy="12" r="6"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4m-8-3 2 3-2 1"/></svg>
                         </div>
-                        <h3 class="font-cinzel text-xl font-bold text-white mb-1">Day-Date 40 Gold</h3>
-                        <p class="text-amber-400 font-semibold text-lg mb-3">$41,000</p>
-                        <p id="card3-desc" class="text-gray-400 text-sm leading-relaxed mb-6">
-                            ساعة الرؤساء والوجهاء، مصنعة بالكامل من الذهب الخالص عيار 18 قيراط.
-                        </p>
+                        <h3>Day-Date 40 Gold</h3>
+                        <div class="price">$41,000</div>
+                        <p id="card3-desc">ساعة الرؤساء والوجهاء، مصنعة بالكامل من الذهب الخالص عيار 18 قيراط.</p>
                     </div>
-                    <button class="ios-btn w-full py-3 rounded-2xl text-xs uppercase font-bold text-white tracking-widest flex items-center justify-center gap-2">
+                    <button class="ios-btn" style="width: 100%;">
                         <span class="card-btn-text">تواصل معنا</span>
-                        <i data-lucide="arrow-right" class="w-4 h-4 text-amber-400"></i>
                     </button>
                 </div>
-
             </div>
         </section>
 
         <!-- Company Heritage Section -->
-        <section class="py-20 px-6 max-w-5xl mx-auto">
-            <div class="ios-glass rounded-3xl p-8 md:p-12 relative overflow-hidden">
-                <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-                <h2 id="about-title" class="text-2xl md:text-4xl font-cinzel font-bold text-white mb-6">عن دار رولكس</h2>
-                <p id="about-desc" class="text-gray-300 text-base md:text-lg leading-relaxed font-light mb-6">
-                    تأسست رولكس على يد هانس ويلزدورف عام 1905، واستمرت لأكثر من قرن في إعادة تعريف مفهوم الساعات الفاخرة. يمثل كل مكون في ساعاتنا ابتكاراً هندسياً فريداً يجمع بين المتانة المطلقة والتصميم الخالد الذي لا يمحوه الزمن.
+        <section class="about-section">
+            <div class="about-card ios-glass">
+                <h2 id="about-title" style="font-size: 26px; color: #fff; margin-bottom: 16px;">عن دار رولكس</h2>
+                <p id="about-desc" style="color: #d1d5db; line-height: 1.7; font-size: 15px;">
+                    تأسست رولكس عام 1905، واستمرت لأكثر من قرن في إعادة تعريف مفهوم الساعات الفاخرة. يمثل كل مكون في ساعاتنا ابتكاراً هندسياً فريداً يجمع بين المتانة المطلقة والتصميم الخالد.
                 </p>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6 border-t border-white/10 text-center">
+                <div class="stats-grid">
                     <div>
-                        <span class="block text-2xl font-cinzel font-bold text-amber-400">1905</span>
-                        <span id="stat1" class="text-xs text-gray-400">سنة التأسيس</span>
+                        <span class="stat-num">1905</span>
+                        <span id="stat1" class="stat-label">سنة التأسيس</span>
                     </div>
                     <div>
-                        <span class="block text-2xl font-cinzel font-bold text-amber-400">100%</span>
-                        <span id="stat2" class="text-xs text-gray-400">صناعة سويسرية</span>
+                        <span class="stat-num">100%</span>
+                        <span id="stat2" class="stat-label">صناعة سويسرية</span>
                     </div>
                     <div>
-                        <span class="block text-2xl font-cinzel font-bold text-amber-400">500+</span>
-                        <span id="stat3" class="text-xs text-gray-400">براءة اختراع</span>
+                        <span class="stat-num">500+</span>
+                        <span id="stat3" class="stat-label">براءة اختراع</span>
                     </div>
                     <div>
-                        <span class="block text-2xl font-cinzel font-bold text-amber-400">300m</span>
-                        <span id="stat4" class="text-xs text-gray-400">مقاومة الماء</span>
+                        <span class="stat-num">300m</span>
+                        <span id="stat4" class="stat-label">مقاومة الماء</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Footer Section -->
-        <footer class="py-12 px-6 border-t border-white/10 backdrop-blur-md">
-            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-                <div class="flex items-center gap-3">
-                    <i data-lucide="crown" class="w-6 h-6 text-amber-400"></i>
-                    <span class="font-cinzel text-lg font-bold text-white tracking-widest">ROLEX</span>
-                </div>
-                
-                <p class="text-amber-300/90 text-sm font-semibold tracking-wider">
-                    Designed by Abood
-                </p>
-
-                <p class="text-gray-500 text-xs">
-                    © 2026 ROLEX. All rights reserved.
-                </p>
-            </div>
+        <!-- Footer -->
+        <footer>
+            <div class="logo" style="font-size: 16px;">ROLEX</div>
+            <div class="signature">Designed by Abood</div>
+            <div style="color: #6b7280; font-size: 12px;">© 2026 ROLEX. All rights reserved.</div>
         </footer>
-
     </div>
 
-    <!-- 3D Engine & Logic Script -->
+    <!-- 3D Engine & Interactive Logic -->
     <script>
-        // Initialize Icons
-        lucide.createIcons();
-
-        // Translation Dictionary
+        // Language Toggle Logic
         let currentLang = 'ar';
         const translations = {
             ar: {
                 subtitle: "الكمال في صناعة الساعات",
                 title: "OYSTER PERPETUAL",
-                heroDesc: "الدقة والأناقة في أبهى صورها. قم بالتمرير للأسفل لاستكشاف الساعة ثلاثية الأبعاد والتصاميم الحصرية.",
+                heroDesc: "الدقة والأناقة في أبهى صورها. اسحب للأعلى أو أسفل لاستكشاف الساعة ثلاثية الأبعاد والمجموعات الحصرية.",
                 heroCta: "استكشف المجموعات",
                 collectionTitle: "المجموعة المختارة",
                 card1Desc: "رمز الاستكشاف وأعماق البحار، مع مقاومة عالية للماء وإطار سيراميك فاخر.",
@@ -241,7 +384,7 @@
                 card3Desc: "ساعة الرؤساء والوجهاء، مصنعة بالكامل من الذهب الخالص عيار 18 قيراط.",
                 cardBtn: "تواصل معنا",
                 aboutTitle: "عن دار رولكس",
-                aboutDesc: "تأسست رولكس على يد هانس ويلزدورف عام 1905، واستمرت لأكثر من قرن في إعادة تعريف مفهوم الساعات الفاخرة. يمثل كل مكون في ساعاتنا ابتكاراً هندسياً فريداً يجمع بين المتانة المطلقة والتصميم الخالد الذي لا يمحوه الزمن.",
+                aboutDesc: "تأسست رولكس عام 1905، واستمرت لأكثر من قرن في إعادة تعريف مفهوم الساعات الفاخرة. يمثل كل مكون في ساعاتنا ابتكاراً هندسياً فريداً يجمع بين المتانة المطلقة والتصميم الخالد.",
                 stat1: "سنة التأسيس",
                 stat2: "صناعة سويسرية",
                 stat3: "براءة اختراع",
@@ -251,7 +394,7 @@
             en: {
                 subtitle: "PERFECTION IN WATCHMAKING",
                 title: "OYSTER PERPETUAL",
-                heroDesc: "Precision and elegance in their finest forms. Scroll down to explore the interactive 3D timepiece and exclusive models.",
+                heroDesc: "Precision and elegance in their finest forms. Scroll to explore the interactive 3D timepiece and exclusive models.",
                 heroCta: "Explore Collection",
                 collectionTitle: "Featured Selection",
                 card1Desc: "The archetype of the diver’s watch, featuring ultimate waterproofness and ceramic bezel.",
@@ -259,7 +402,7 @@
                 card3Desc: "The ultimate watch of prestige, crafted exclusively in 18 ct yellow gold.",
                 cardBtn: "Inquire Now",
                 aboutTitle: "About Rolex",
-                aboutDesc: "Founded by Hans Wilsdorf in 1905, Rolex has continuously pioneered horological excellence. Every single component reflects unyielding precision, unmatched durability, and timeless sophistication.",
+                aboutDesc: "Founded in 1905, Rolex has continuously pioneered horological excellence. Every single component reflects unyielding precision and timeless sophistication.",
                 stat1: "Founded",
                 stat2: "Swiss Made",
                 stat3: "Patents",
@@ -268,11 +411,10 @@
             }
         };
 
-        function toggleLanguage() {
+        function toggleLang() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
             document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
-            document.documentElement.setAttribute('lang', currentLang);
-
+            
             const t = translations[currentLang];
             document.getElementById('hero-subtitle').innerText = t.subtitle;
             document.getElementById('hero-title').innerText = t.title;
@@ -293,98 +435,83 @@
             document.querySelectorAll('.card-btn-text').forEach(btn => btn.innerText = t.cardBtn);
         }
 
-        // --- THREE.JS 3D SCENE SETUP ---
-        const container = document.getElementById('webgl-container');
-        const scene = new THREE.Scene();
-        
-        // Camera
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 0, 7);
+        // --- Three.js 3D Rendering & Interaction ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('webgl-container');
+            
+            if (typeof THREE === 'undefined') return;
 
-        // Renderer
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        container.appendChild(renderer.domElement);
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 0, 7);
 
-        // Lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-        scene.add(ambientLight);
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
 
-        const dirLight1 = new THREE.DirectionalLight(0xd4af37, 2.5); // Gold light
-        dirLight1.position.set(5, 5, 4);
-        scene.add(dirLight1);
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+            scene.add(ambientLight);
 
-        const dirLight2 = new THREE.DirectionalLight(0x00ffff, 0.8); // Subtle blue fill
-        dirLight2.position.set(-5, -5, -2);
-        scene.add(dirLight2);
+            const goldLight = new THREE.DirectionalLight(0xd4af37, 2.5);
+            goldLight.position.set(5, 5, 4);
+            scene.add(goldLight);
 
-        // --- BUILD 3D ROLEX WATCH PROCEDURALLY ---
-        const watchGroup = new THREE.Group();
+            const rimLight = new THREE.DirectionalLight(0x3b82f6, 0.8);
+            rimLight.position.set(-5, -5, -2);
+            scene.add(rimLight);
 
-        // Gold Bezel
-        const bezelGeo = new THREE.CylinderGeometry(1.5, 1.5, 0.25, 64);
-        const goldMat = new THREE.MeshStandardMaterial({
-            color: 0xd4af37,
-            metalness: 0.9,
-            roughness: 0.15,
-        });
-        const bezel = new THREE.Mesh(bezelGeo, goldMat);
-        bezel.rotation.x = Math.PI / 2;
-        watchGroup.add(bezel);
+            // Create 3D Watch Group
+            const watchGroup = new THREE.Group();
 
-        // Dial Face (Dark Emerald/Black)
-        const dialGeo = new THREE.CylinderGeometry(1.35, 1.35, 0.27, 64);
-        const dialMat = new THREE.MeshStandardMaterial({
-            color: 0x032414, // Rolex Emerald Green
-            metalness: 0.5,
-            roughness: 0.2,
-        });
-        const dial = new THREE.Mesh(dialGeo, dialMat);
-        dial.rotation.x = Math.PI / 2;
-        watchGroup.add(dial);
+            const goldMat = new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.9, roughness: 0.15 });
+            const dialMat = new THREE.MeshStandardMaterial({ color: 0x032414, metalness: 0.5, roughness: 0.2 });
+            const strapMat = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.8, roughness: 0.2 });
 
-        // Hour Markers (Gold)
-        for(let i = 0; i < 12; i++) {
-            const angle = (i / 12) * Math.PI * 2;
-            const markerGeo = new THREE.BoxGeometry(0.08, 0.04, 0.22);
-            const marker = new THREE.Mesh(markerGeo, goldMat);
-            marker.position.x = Math.cos(angle) * 1.1;
-            marker.position.y = Math.sin(angle) * 1.1;
-            marker.position.z = 0.14;
-            marker.rotation.z = angle;
-            watchGroup.add(marker);
-        }
+            // Bezel
+            const bezel = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 0.25, 64), goldMat);
+            bezel.rotation.x = Math.PI / 2;
+            watchGroup.add(bezel);
 
-        // Watch Hands
-        const handMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.9, roughness: 0.1 });
-        
-        const hourHand = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.6, 0.02), handMat);
-        hourHand.position.set(0, 0.2, 0.16);
-        hourHand.rotation.z = -Math.PI / 4;
-        watchGroup.add(hourHand);
+            // Dial Face
+            const dial = new THREE.Mesh(new THREE.CylinderGeometry(1.35, 1.35, 0.27, 64), dialMat);
+            dial.rotation.x = Math.PI / 2;
+            watchGroup.add(dial);
 
-        const minuteHand = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.9, 0.02), handMat);
-        minuteHand.position.set(0, 0.35, 0.17);
-        minuteHand.rotation.z = Math.PI / 3;
-        watchGroup.add(minuteHand);
-
-        // Metal Strap (Links)
-        const strapMat = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, metalness: 0.85, roughness: 0.2 });
-        for(let side = -1; side <= 1; side += 2) {
-            for(let i = 1; i <= 4; i++) {
-                const linkGeo = new THREE.BoxGeometry(1.2, 0.35, 0.15);
-                const link = new THREE.Mesh(linkGeo, i % 2 === 0 ? goldMat : strapMat);
-                link.position.set(0, side * (1.5 + i * 0.32), -i * 0.08);
-                watchGroup.add(link);
+            // Hour Markers
+            for(let i = 0; i < 12; i++) {
+                const angle = (i / 12) * Math.PI * 2;
+                const marker = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.04, 0.22), goldMat);
+                marker.position.set(Math.cos(angle) * 1.1, Math.sin(angle) * 1.1, 0.14);
+                marker.rotation.z = angle;
+                watchGroup.add(marker);
             }
-        }
 
-        scene.add(watchGroup);
+            // Strap Links
+            for(let side = -1; side <= 1; side += 2) {
+                for(let i = 1; i <= 4; i++) {
+                    const link = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.35, 0.15), i % 2 === 0 ? goldMat : strapMat);
+                    link.position.set(0, side * (1.5 + i * 0.32), -i * 0.08);
+                    watchGroup.add(link);
+                }
+            }
 
-        // --- DYNAMIC DUST / LUXURY PARTICLES BACKGROUND ---
-        const particlesCount = 250;
-        const particlesGeo = new THREE.BufferGeometry();
-        const positions = new Float32Array(particlesCount * 3);
+            scene.add(watchGroup);
 
-        for(let i = 0; i < particlesCoun
+            // Background Dust Particles
+            const particlesCount = 200;
+            const positions = new Float32Array(particlesCount * 3);
+            for(let i = 0; i < particlesCount * 3; i++) {
+                positions[i] = (Math.random() - 0.5) * 15;
+            }
+            const particlesGeo = new THREE.BufferGeometry();
+            particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const particleSystem = new THREE.Points(particlesGeo, new THREE.PointsMaterial({ size: 0.03, color: 0xd4af37, transparent: true, opacity: 0.6 }));
+            scene.add(particleSystem);
+
+            // Fade-in canvas
+            setTimeout(() => container.classList.add('loaded'), 200);
+
+            // Scroll & Touch Events
+            let targetRotY
